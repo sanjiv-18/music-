@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Music Player</title>
+
+<style>
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #1e1e2f;
+    font-family: Arial, sans-serif;
+}
+
+.player {
+    background: #ffffff;
+    padding: 20px;
+    width: 300px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+button {
+    padding: 10px 20px;
+    margin: 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #de9bc9;
+    color: white;
+}
+
+input[type="range"] {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.time {
+    margin-top: 8px;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="player">
+    <h3>🎵 My Music Player</h3>
+
+    <audio id="audio">
+        <source src="Ambikapathy.mp3" type="audio/mpeg">
+    </audio>
+
+    <button onclick="audio.play()">▶ Play</button>
+    <button onclick="audio.pause()">⏸ Pause</button>
+
+    <input type="range" id="progress" value="0">
+
+    <div class="time">
+        <span id="current">0:00</span> / <span id="duration">0:00</span>
+    </div>
+
+    <p>Volume</p>
+    <input type="range" min="0" max="1" step="0.1" onchange="audio.volume=this.value">
+</div>
+
+<script>
+const audio = document.getElementById("audio");
+const progress = document.getElementById("progress");
+const current = document.getElementById("current");
+const duration = document.getElementById("duration");
+
+// Set total duration
+audio.onloadedmetadata = () => {
+    progress.max = audio.duration;
+    duration.innerText = formatTime(audio.duration);
+};
+
+// Update seconds WHILE PLAYING
+audio.ontimeupdate = () => {
+    if (!audio.paused) {
+        progress.value = audio.currentTime;
+        current.innerText = formatTime(audio.currentTime);
+    }
+};
+
+// Seek
+progress.oninput = () => {
+    audio.currentTime = progress.value;
+};
+
+// Format time
+function formatTime(seconds) {
+    let m = Math.floor(seconds / 60);
+    let s = Math.floor(seconds % 60);
+    return `${m}:${s < 10 ? "0" + s : s}`;
+}
+</script>
+
+</body>
+</html>
